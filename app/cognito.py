@@ -49,6 +49,9 @@ def verify_jwt(token: str) -> Dict[str, Any]:
 
 
 def get_secret_hash(username: str) -> str:
+    if not settings.client_id or not settings.client_secret:
+        raise RuntimeError("CLIENT_ID and CLIENT_SECRET environment variables must be set")
+
     msg = (username + settings.client_id).encode("utf-8")
     key = settings.client_secret.encode("utf-8")
     digest = hmac.new(key, msg, hashlib.sha256).digest()

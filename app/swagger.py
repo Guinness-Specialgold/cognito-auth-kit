@@ -17,7 +17,7 @@ def build_swagger_template(settings) -> Dict[str, Any]:
             ),
             "contact": {"name": "Platform Team", "email": "platform@example.com"},
         },
-        "schemes": ["http", "https"],
+        "schemes": ["https", "http"],
         "basePath": "/",
         "tags": [
             {

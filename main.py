@@ -1,15 +1,40 @@
-from app import create_app  # or from app import app
-import awsgi
+from dotenv import load_dotenv
+load_dotenv()
 
-# Lambda will reuse this instance between invocations
+from app import create_app
+import serverless_wsgi
+
 flask_app = create_app()
 
 def lambda_handler(event, context):
-    """
-    AWS Lambda entrypoint.
-    API Gateway or Lambda Function URL will send events here.
-    """
-    return awsgi.response(flask_app, event, context)
+    # Normalize Lambda Function URL / HTTP API v2 events into REST-style shape for serverless-wsgi
+    # This handles the "version": "2.0" format used by Function URLs.
+    if event.get("version") == "2.0" and "httpMethod" not in event:
+        rc = event.get("requestContext") or {}
+        http = rc.get("http") or {}
+        headers = event.get("headers") or {}
+        
+        # Function URLs don't automatically handle OPTIONS preflight if configured without CORS,
+        # so we ensure the event looks like a standard REST API event that Flask can route.
+        
+        event = {
+            "httpMethod": http.get("method", "GET"),
+            "path": event.get("rawPath") or http.get("path") or "/",
+            "headers": headers,
+            "queryStringParameters": event.get("queryStringParameters") or {},
+            "body": event.get("body"),
+            "isBase64Encoded": event.get("isBase64Encoded", False),
+            "requestContext": {
+                "identity": {"sourceIp": http.get("sourceIp", "")},
+                "stage": rc.get("stage", "$default"),
+                # Pass other context if needed
+                "accountId": rc.get("accountId"),
+                "requestId": rc.get("requestId"),
+            },
+        }
+
+    return serverless_wsgi.handle_request(flask_app, event, context)
+
 
 # Optional: local dev
 if __name__ == "__main__":

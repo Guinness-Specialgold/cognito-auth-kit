@@ -3,6 +3,11 @@
 from dataclasses import dataclass
 import os
 
+from dotenv import load_dotenv
+
+# Load environment variables from a .env file if present (useful for local dev)
+load_dotenv()
+
 
 @dataclass(frozen=True)
 class Settings:
