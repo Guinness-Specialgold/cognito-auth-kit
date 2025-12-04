@@ -1,3 +1,19 @@
+<img width="1192" height="864" alt="image" src="https://github.com/user-attachments/assets/1e4eabb9-91ff-4a96-885f-4aa0c447a96b" />
+
+<img width="1113" height="828" alt="image" src="https://github.com/user-attachments/assets/3e8489d5-066e-487e-a9bf-aa3fb0b75051" />
+
+<img width="1071" height="686" alt="image" src="https://github.com/user-attachments/assets/b07ed9b8-4968-4b11-bdf9-574dc3b2f772" />
+
+
+
+
+
+
+
+
+
+
+
 # Cognito Auth Demo API
 
 A Flask application that exercises every Cognito authentication flow: email/password signup, confirmation, login, refresh, password recovery, profile updates and Google (federated) login. The project is wired with Flasgger so the same Swagger definition used by AWS Lambda can be browsed locally at `/apidocs`.
